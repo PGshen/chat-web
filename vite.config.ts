@@ -1,3 +1,9 @@
+/*
+ * @Date: 2023-07-27 22:35:12
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-07-27 22:53:38
+ * @FilePath: /ai-tool-web/vite.config.ts
+ */
 /**
  * Vite configuaration file
  * https://vitejs.dev/config/
@@ -5,6 +11,7 @@
 
 import { defineConfig, Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import * as path from 'path'
 import mockApp from './mock'
 
 const mock = (): Plugin => ({
@@ -15,20 +22,12 @@ const mock = (): Plugin => ({
   }
 })
 
-// for parse sfc custom blocks
-// https://github.com/vitejs/vite/tree/main/packages/plugin-vue#example-for-transforming-custom-blocks
-// const sfcCustomBlocks = (): Plugin => ({
-//   name: 'sfcCustomBlocks',
-//   transform: (code, id) => {
-//     if (!id.includes('vue&type=title')) return
-//     // title black
-//     return `export default Component => {
-//       Component.title = '${code}'
-//     }`
-//   }
-// })
-
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
   plugins: [vue(), mock()],
   build: {
     rollupOptions: {

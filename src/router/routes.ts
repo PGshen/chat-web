@@ -1,19 +1,36 @@
 /*
- * @Descripttion: 
- * @version: 
- * @Date: 2023-07-27 19:40:33
- * @LastEditTime: 2023-07-27 20:25:23
+ * @Date: 2023-07-27 22:35:12
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-07-28 00:19:50
+ * @FilePath: /ai-tool-web/src/router/routes.ts
  */
-/* eslint-disable @typescript-eslint/promise-function-async */
 import { RouteRecordRaw } from 'vue-router'
 
 const mainRoutes: RouteRecordRaw[] = [
   {
     name: 'home',
     path: '/',
-    component: () => import('../views/home.vue'),
+    component: async () => await import('@/views/home.vue'),
     meta: {
       title: 'Home',
+      requiresAuth: true
+    }
+  },
+  {
+    name: 'chat',
+    path: '/chat',
+    component: async () => await import('@/views/chat.vue'),
+    meta: {
+      title: 'Chat',
+      requiresAuth: true
+    }
+  },
+  {
+    name: 'about',
+    path: '/about',
+    component: async () => await import('@/views/about.vue'),
+    meta: {
+      title: 'About',
       requiresAuth: true
     }
   }
@@ -23,7 +40,7 @@ const labsRoutes: RouteRecordRaw[] = [
   {
     name: 'labs',
     path: '/labs',
-    component: () => import('../views/labs.vue'),
+    component: async () => await import('@/views/labs.vue'),
     meta: {
       title: 'Labs'
     }
@@ -34,7 +51,7 @@ const routes: RouteRecordRaw[] = [
   {
     name: 'login',
     path: '/login',
-    component: () => import('../views/login.vue'),
+    component: async () => await import('../views/login.vue'),
     meta: {
       title: 'Sign In'
     }
@@ -42,14 +59,14 @@ const routes: RouteRecordRaw[] = [
   {
     name: 'layout',
     path: '/',
-    component: () => import('../layouts/index.vue'),
+    component: async () => await import('../layouts/index.vue'),
     children: [...mainRoutes, ...labsRoutes]
   },
   // ## not found page
   {
     name: 'not-found',
     path: '/:path*',
-    component: () => import('../views/error.vue'),
+    component: async () => await import('../views/error.vue'),
     meta: {
       title: 'Oh no!'
     }

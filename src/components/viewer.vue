@@ -1,3 +1,9 @@
+<!--
+ * @Date: 2023-07-27 22:35:12
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-07-27 23:25:13
+ * @FilePath: /ai-tool-web/src/components/viewer.vue
+-->
 <template>
   <router-view />
 </template>
@@ -14,23 +20,3 @@ router.beforeEach(() => loadingBar?.start())
 
 router.afterEach(() => loadingBar?.finish())
 </script>
-
-<!-- <template>
-  <suspense @pending="loadingBar?.start" @resolve="loadingBar.finish">
-    <template #default>
-      <router-view v-slot="{ Component, route }">
-        <transition :name="route.meta.transition || 'fade'" mode="out-in">
-          <keep-alive>
-            <component :is="Component" :key="route.meta.usePathKey ? route.path : undefined" />
-          </keep-alive>
-        </transition>
-      </router-view>
-    </template>
-    <template #fallback> Loading... </template>
-  </suspense>
-</template>
-
-<script lang="ts" setup>
-import { useLoadingBar } from 'naive-ui'
-const loadingBar = useLoadingBar()
-</script> -->
