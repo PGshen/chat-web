@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-27 22:35:12
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-07-28 00:19:50
+ * @LastEditTime: 2023-07-28 09:54:09
  * @FilePath: /ai-tool-web/src/router/routes.ts
  */
 import { RouteRecordRaw } from 'vue-router'
@@ -36,17 +36,6 @@ const mainRoutes: RouteRecordRaw[] = [
   }
 ]
 
-const labsRoutes: RouteRecordRaw[] = [
-  {
-    name: 'labs',
-    path: '/labs',
-    component: async () => await import('@/views/labs.vue'),
-    meta: {
-      title: 'Labs'
-    }
-  }
-]
-
 const routes: RouteRecordRaw[] = [
   {
     name: 'login',
@@ -60,7 +49,7 @@ const routes: RouteRecordRaw[] = [
     name: 'layout',
     path: '/',
     component: async () => await import('../layouts/index.vue'),
-    children: [...mainRoutes, ...labsRoutes]
+    children: [...mainRoutes]
   },
   // ## not found page
   {

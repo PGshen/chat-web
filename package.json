@@ -56,6 +56,7 @@
     "express": "4.17.2",
     "ky": "0.28.7",
     "lint-staged": "12.1.4",
+    "scss": "^0.2.4",
     "typescript": "4.5.4",
     "vite": "2.7.7",
     "vue-tsc": "0.30.1"

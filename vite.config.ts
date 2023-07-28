@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-27 22:35:12
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-07-27 22:53:38
+ * @LastEditTime: 2023-07-28 09:50:31
  * @FilePath: /ai-tool-web/vite.config.ts
  */
 /**
@@ -26,6 +26,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
+    }
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@use "@/styles/index.scss" as *;'
+      }
     }
   },
   plugins: [vue(), mock()],
