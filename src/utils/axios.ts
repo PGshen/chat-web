@@ -1,29 +1,53 @@
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+/*
+ * @Descripttion:
+ * @version:
+ * @Date: 2023-04-29 22:27:47
+ * @LastEditTime: 2023-07-29 23:38:24
+ */
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
+import { useMessage } from 'naive-ui'
+import { useSettingStore } from '@/store/setting'
 
-const service = axios.create();
+const setting = useSettingStore().getSetting()
+
+axios.defaults.headers.common.apiKey = setting.apiKey
+axios.defaults.headers.common.model = setting.model
+axios.defaults.headers.common.temperature = setting.temperature
+axios.defaults.headers.common.presencePenalty = setting.presencePenalty
+
+const service = axios.create()
 
 // Request interceptors
 service.interceptors.request.use(
-    (config: AxiosRequestConfig) => {
-        // do something
-        return config;
-    },
-    (error: any) => {
-        Promise.reject(error);
-    }
-);
+  (config: AxiosRequestConfig) => {
+    // do something
+    return config
+  },
+  async (error: any) => {
+    return await Promise.reject(error)
+  }
+)
 
 // Response interceptors
 service.interceptors.response.use(
-    async (response: AxiosResponse) => {
-        console.log(response);
-
-        // do something
-    },
-    (error: any) => {
-        // do something
-        return Promise.reject(error);
+  async (response: AxiosResponse) => {
+    console.log(response)
+    if (response.status !== 200) {
+      useMessage().error('Request error!')
     }
-);
+    const data = response.data
+    if (data.code !== 200) {
+      useMessage().error(data.msg)
+    }
 
-export default service;
+    return response
+    // do something
+  },
+  async (error: any) => {
+    // do something
+    console.log(error)
+    return await Promise.reject(error)
+  }
+)
+
+export default service

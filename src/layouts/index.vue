@@ -1,3 +1,9 @@
+<!--
+ * @Date: 2023-07-27 23:40:28
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-07-29 17:17:17
+ * @FilePath: /ai-tool-web/src/layouts/index.vue
+-->
 <template>
   <div style="display: flex; flex-direction: column; height: 100vh;">
     <div class="header">
@@ -22,31 +28,26 @@
         <span>Hello</span>
       </n-a>
       <div v-for="item in funcList" :key="item.id" class="funcBtn">
-        {{ item.title }}
+        <n-icon :size="18" :component="LogoWechat" />
+        <span style="margin-left: 5px;">{{ item.title }}</span>
       </div>
     </div>
-    <div style="flex: 1;">
+    <div style="flex: 1; overflow-y: auto;">
       <router-view />
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { LogoWechat } from '@vicons/ionicons5'
 
-export default {
-  setup () {
-    const funcList = [
-      {
-        id: 1,
-        title: '对话',
-        path: 'chat'
-      }
-    ]
-    return {
-      funcList
-    }
+const funcList = [
+  {
+    id: 1,
+    title: '对话',
+    path: 'chat'
   }
-}
+]
 </script>
 
 <style scoped>
@@ -60,6 +61,9 @@ export default {
   color: #18a058;
   font-size: 16px;
   margin: 0px 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
 .logo {

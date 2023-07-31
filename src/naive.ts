@@ -1,3 +1,9 @@
+/*
+ * @Date: 2023-07-27 22:35:12
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-07-29 17:26:24
+ * @FilePath: /ai-tool-web/src/naive.ts
+ */
 import {
   // create naive ui
   create,
@@ -37,7 +43,11 @@ import {
   NConfigProvider,
   NDialogProvider,
   NMessageProvider,
-  NLoadingBarProvider
+  NLoadingBarProvider,
+  NEllipsis,
+  NIconWrapper,
+  NSelect,
+  NSlider
 } from 'naive-ui'
 
 export default create({
@@ -48,6 +58,7 @@ export default create({
     NText,
     NA,
     NIcon,
+    NIconWrapper,
     NImage,
     NAvatar,
     NButton,
@@ -65,6 +76,7 @@ export default create({
     NForm,
     NFormItemRow,
     NInput,
+    NSelect,
     NTooltip,
     NPopover,
     NSpace,
@@ -77,6 +89,8 @@ export default create({
     NConfigProvider,
     NDialogProvider,
     NMessageProvider,
-    NLoadingBarProvider
+    NLoadingBarProvider,
+    NEllipsis,
+    NSlider
   ]
 })

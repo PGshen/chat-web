@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-27 22:35:12
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-07-28 09:50:31
+ * @LastEditTime: 2023-07-29 23:49:35
  * @FilePath: /ai-tool-web/vite.config.ts
  */
 /**
@@ -42,6 +42,22 @@ export default defineConfig({
         manualChunks: {
           'naive-ui': ['naive-ui']
         }
+      }
+    }
+  },
+  server: {
+    port: 3000,
+    hmr: {
+      host: 'localhost',
+      port: 3000
+    },
+    // 设置代理
+    proxy: {
+      '/ai': {
+        // target: 'http://gpt-meeting-service:8000',
+        target: 'http://0.0.0.0:8000',
+        changeOrigin: true,
+        rewrite: (path: string) => path.replace(/^\/ai/, '/api')
       }
     }
   }

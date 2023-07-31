@@ -1,26 +1,18 @@
-import request from '@/utils/axios';
+import { useSettingStore } from '@/store/setting'
+export interface IResponseType<P = {}> {
+  code?: number
+  msg?: string
+  data?: P
+}
 
 /**
- * 登录
+ * 获取设置
  */
-
-interface IResponseType<P = {}> {
-    code?: number;
-    status: number;
-    msg: string;
-    data: P;
+export function getSettingWithCors () {
+  const headers = useSettingStore().getSetting() as unknown as Record<string, string>
+  headers['Content-Type'] = 'application/json'
+  headers['Sec-Fetch-Mode'] = 'cors'
+  headers['Sec-Fetch-Dest'] = 'empty'
+  headers['Sec-Fetch-Site'] = 'same-site'
+  return headers
 }
-interface ILogin {
-    token: string;
-    expires: number;
-}
-export const login = (username: string, password: string) => {
-    return request<IResponseType<ILogin>>({
-        url: '/api/auth/login',
-        method: 'post',
-        data: {
-            username,
-            password
-        }
-    });
-};

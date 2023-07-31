@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-27 22:35:12
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-07-28 09:54:09
+ * @LastEditTime: 2023-07-29 14:11:49
  * @FilePath: /ai-tool-web/src/router/routes.ts
  */
 import { RouteRecordRaw } from 'vue-router'
@@ -19,7 +19,7 @@ const mainRoutes: RouteRecordRaw[] = [
   {
     name: 'chat',
     path: '/chat',
-    component: async () => await import('@/views/chat.vue'),
+    component: async () => await import('@/views/chat/index.vue'),
     meta: {
       title: 'Chat',
       requiresAuth: true
