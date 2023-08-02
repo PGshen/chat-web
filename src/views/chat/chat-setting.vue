@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 15:46:16
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-07-30 13:26:53
+ * @LastEditTime: 2023-08-02 23:24:09
  * @FilePath: /ai-tool-web/src/views/chat/chat-setting.vue
 -->
 <template>
@@ -16,7 +16,7 @@
     <n-tab-pane name="advanced" tab="参数设置">
       <n-form>
         <n-form-item-row label="API key">
-          <n-input v-model:value="setting.apiKey" />
+          <n-input v-model:value="setting.apiKey" type="password" />
         </n-form-item-row>
         <n-form-item-row label="模型">
           <n-select v-model:value="setting.model" :options="modelOptions" />

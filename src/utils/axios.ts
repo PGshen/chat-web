@@ -2,7 +2,7 @@
  * @Descripttion:
  * @version:
  * @Date: 2023-04-29 22:27:47
- * @LastEditTime: 2023-07-29 23:38:24
+ * @LastEditTime: 2023-08-03 00:20:07
  */
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import { useMessage } from 'naive-ui'
@@ -35,12 +35,12 @@ service.interceptors.response.use(
     if (response.status !== 200) {
       useMessage().error('Request error!')
     }
-    const data = response.data
-    if (data.code !== 200) {
-      useMessage().error(data.msg)
-    }
+    // const data = response.data
+    // if (data.code !== 200) {
+    //   useMessage().error(data.msg)
+    // }
 
-    return response
+    return response.data
     // do something
   },
   async (error: any) => {

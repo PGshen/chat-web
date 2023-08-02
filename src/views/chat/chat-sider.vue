@@ -1,24 +1,27 @@
 <!--
  * @Date: 2023-07-28 09:46:28
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-07-29 16:02:17
+ * @LastEditTime: 2023-08-03 00:35:53
  * @FilePath: /ai-tool-web/src/views/chat/chat-sider.vue
 -->
 <template>
   <div class="sider">
     <div class="new-chat">
-      <n-button type="primary" block dashed>
+      <n-button type="primary" block dashed @click="newChat">
         New Chat
       </n-button>
     </div>
     <div class="chat-list">
-      <div v-for="item in chatList" :key="item.id" class="chat-item">
-        <div class="close-btn">
+      <div
+        v-for="item in chatList" :key="item.id" class="chat-item" :class="{ 'selected': nowChatId == item.id }"
+        @click="openChat(item.id)"
+      >
+        <div class="close-btn" @click.stop="delChat(item.id)">
           <n-icon :size="18" :component="CloseCircleOutline" />
         </div>
         <div>
           <n-ellipsis :line-clamp="2">
-            {{ item.name }}
+            {{ item.title }}
           </n-ellipsis>
         </div>
         <div style="font-size: 10px; text-align: end;">{{ common.formatTime(item.time) }}</div>
@@ -28,55 +31,36 @@
 </template>
 
 <script setup lang="ts">
+import { Chat } from '@/types/chat'
+import { useChatStore } from '@/store/chat'
 import { common } from '@/utils'
 import { CloseCircleOutline } from '@vicons/ionicons5'
-const chatList = [
-  {
-    id: 1,
-    name: '聊天记录1',
-    time: 1690611810
+import { PropType } from 'vue'
+
+defineProps({
+  chatList: {
+    type: Array as PropType<Chat[]>,
+    default: () => []
   },
-  {
-    id: 2,
-    name: '电灯熄灭 物换星移 泥牛入海<br>黑暗好像 一颗巨石 按在胸口',
-    time: 1690611810
-  },
-  {
-    id: 3,
-    name: '聊天记录4',
-    time: 1690611810
-  },
-  {
-    id: 1,
-    name: '聊天记录1',
-    time: 1690611810
-  },
-  {
-    id: 2,
-    name: '聊天记录2',
-    time: 1690611810
-  },
-  {
-    id: 3,
-    name: '聊天记录4',
-    time: 1690611810
-  },
-  {
-    id: 1,
-    name: '聊天记录1',
-    time: 1690611810
-  },
-  {
-    id: 2,
-    name: '聊天记录2',
-    time: 1690611810
-  },
-  {
-    id: 3,
-    name: '聊天记录4',
-    time: 1690611810
-  }
-]
+  nowChatId: String
+})
+const emit = defineEmits(['newChat', 'openChat', 'refreshChat'])
+const chatStore = useChatStore()
+
+const newChat = () => {
+  emit('newChat')
+}
+
+const delChat = (chatId: string) => {
+  chatStore.delChat(chatId)
+  emit('refreshChat')
+}
+
+const openChat = (chatId: string) => {
+  console.log(`openChat ${chatId}`)
+  emit('openChat', chatId)
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -113,6 +97,10 @@ const chatList = [
       opacity: 1;
     }
   }
+}
+.selected {
+  color: #36ad6a;
+  border: 1px solid #36ad6a;
 }
 
 .close-btn {

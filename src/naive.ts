@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-27 22:35:12
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-07-29 17:26:24
+ * @LastEditTime: 2023-08-02 23:43:35
  * @FilePath: /ai-tool-web/src/naive.ts
  */
 import {
@@ -47,7 +47,9 @@ import {
   NEllipsis,
   NIconWrapper,
   NSelect,
-  NSlider
+  NSlider,
+  NModal,
+  NEmpty
 } from 'naive-ui'
 
 export default create({
@@ -91,6 +93,9 @@ export default create({
     NMessageProvider,
     NLoadingBarProvider,
     NEllipsis,
-    NSlider
+    NSlider,
+    NModal,
+    NCard,
+    NEmpty
   ]
 })

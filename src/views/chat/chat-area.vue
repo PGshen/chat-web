@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 17:40:22
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-07-30 14:00:04
+ * @LastEditTime: 2023-08-03 00:42:27
  * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
 -->
 <template>
@@ -29,6 +29,15 @@
           </div>
         </div>
       </div>
+      <div v-if="messages && messages.length === 0" style="height: 100%; display: flex; justify-content: center; align-items: center;">
+        <n-empty description="向我提问吧～">
+          <template #icon>
+            <n-icon>
+              <AirplaneOutline />
+            </n-icon>
+          </template>
+        </n-empty>
+      </div>
     </div>
     <div class="send-box">
       <n-input
@@ -47,15 +56,23 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { PropType, onMounted, onUpdated, ref } from 'vue'
 import { Markdown } from '@/components'
-import { Message } from '@/types/chat'
+import { Chat, Message, TripQuery } from '@/types/chat'
 import { common } from '@/utils'
-import { useMessage } from 'naive-ui'
+// import { useMessage } from 'naive-ui'
 import Api from '@/api'
-import { EventSourceMessage, EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
+import { AirplaneOutline } from '@vicons/ionicons5'
+// import { EventSourceMessage, EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
 
-const useMsg = useMessage()
+const props = defineProps({
+  nowChat: {
+    type: Object as PropType<Chat>,
+    default: () => {}
+  }
+})
+
+// const useMsg = useMessage()
 const messages = ref([] as Message[])
 const messageIndexMap = ref(new Map<string, number>())
 const inputMsg = ref('')
@@ -75,57 +92,70 @@ const sendMsg = async () => {
   messageIndexMap.value.set(quizMsg.id, quizMsg.index)
   inputMsg.value = ''
 
-  const url = '/ai/meeting/chat'
   const replyMsg: Message = {
     index: messages.value.length,
     id: common.genRandomString(16),
-    text: '',
+    text: '思考中...',
     isSelf: false,
     time: Date.now() / 1000
   }
   messages.value.push(replyMsg)
   messageIndexMap.value.set(replyMsg.id, replyMsg.index)
-  await sendAndReceive(url, replyMsg.id, {
-    message: quizMsg.text
+  await sendAndReceiveLlm(replyMsg.id, {
+    user: props.nowChat.id,
+    query: quizMsg.text
   })
 }
 
-const sendAndReceive = async (url: string, messageId: string, param: {}) => {
-  const ctrl = new AbortController()
-  await fetchEventSource(url, {
-    method: 'POST',
-    headers: Api.getSettingWithCors(),
-    body: JSON.stringify(param),
-    signal: ctrl.signal,
-    async onopen (response: Response) {
-      console.log('open')
-      if (!response.ok || response.headers.get('content-type') !== EventStreamContentType) {
-        useMsg.error(response.statusText)
-        throw new Error('open fail')
-      }
-    },
-    onmessage (ev: EventSourceMessage) {
-      if (ev.event === 'chat') {
-        // 单独换行符
-        if (ev.data === '') {
-          ev.data = '\n'
-        }
-        const index = getMsgIndex(messageId)
-        messages.value[index].text += ev.data
-        // console.log(ev.id, ev.data);
-        scrollToEnd()
-      }
-    },
-    onclose () {
+// const sendAndReceive = async (url: string, messageId: string, param: {}) => {
+//   const ctrl = new AbortController()
+//   await fetchEventSource(url, {
+//     method: 'POST',
+//     headers: Api.getSettingWithCors(),
+//     body: JSON.stringify(param),
+//     signal: ctrl.signal,
+//     async onopen (response: Response) {
+//       console.log('open')
+//       if (!response.ok || response.headers.get('content-type') !== EventStreamContentType) {
+//         useMsg.error(response.statusText)
+//         throw new Error('open fail')
+//       }
+//     },
+//     onmessage (ev: EventSourceMessage) {
+//       if (ev.event === 'chat') {
+//         // 单独换行符
+//         if (ev.data === '') {
+//           ev.data = '\n'
+//         }
+//         const index = getMsgIndex(messageId)
+//         messages.value[index].text += ev.data
+//         // console.log(ev.id, ev.data);
+//         scrollToEnd()
+//       }
+//     },
+//     onclose () {
+//       const index = getMsgIndex(messageId)
+//       console.log(messages.value[index].text)
+//       console.log('close')
+//     },
+//     onerror (err: any) {
+//       console.log('error: ' + err)
+//       throw new Error(err)
+//     }
+//   })
+// }
+
+const sendAndReceiveLlm = (messageId: string, param: TripQuery) => {
+  Api.tripQuery(param)
+    .then((data) => {
+      console.log(data)
       const index = getMsgIndex(messageId)
-      console.log(messages.value[index].text)
-      console.log('close')
-    },
-    onerror (err: any) {
-      console.log('error: ' + err)
-      throw new Error(err)
-    }
-  })
+      messages.value[index].text = data.message
+      // console.log(ev.id, ev.data);
+      scrollToEnd()
+    }).catch((err) => {
+      console.log(err)
+    })
 }
 
 const getMsgIndex = (messageId: string): number => {
@@ -140,6 +170,16 @@ const scrollToEnd = () => {
   const chatArea = document.querySelector('.chat-box')!
   chatArea.scrollTop = chatArea.scrollHeight + 1200
 }
+
+onMounted(() => {
+  messages.value = props.nowChat.messageList
+  console.log(props.nowChat)
+})
+
+onUpdated(() => {
+  console.log(props.nowChat)
+  messages.value = props.nowChat.messageList
+})
 
 </script>
 
