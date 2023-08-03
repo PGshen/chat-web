@@ -1,5 +1,5 @@
 # 使用一个基本的 Node.js 镜像
-FROM node:alpine
+FROM --platform=linux/amd64 node:alpine
 
 # 设置工作目录
 WORKDIR /app

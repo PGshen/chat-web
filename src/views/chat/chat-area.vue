@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 17:40:22
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-03 00:42:27
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-03 13:42:38
  * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
 -->
 <template>
@@ -173,11 +173,9 @@ const scrollToEnd = () => {
 
 onMounted(() => {
   messages.value = props.nowChat.messageList
-  console.log(props.nowChat)
 })
 
 onUpdated(() => {
-  console.log(props.nowChat)
   messages.value = props.nowChat.messageList
 })
 

@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-02 21:30:30
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-03 00:31:56
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-03 13:41:48
  * @FilePath: /ai-tool-web/src/store/chat.ts
  */
 import { Chat, Message } from '@/types/chat'
@@ -11,24 +11,23 @@ export const useChatStore = defineStore({
   id: 'chat',
   state: () => {
     return {
-      chatRecords: new Map<string, Chat>()
+      myChatMap: new Map<string, Chat>()
     }
   },
   actions: {
     newChat (chat: Chat) {
-      this.chatRecords.set(chat.id, chat)
-      console.log(this.chatRecords)
+      this.myChatMap.set(chat.id, chat)
     },
     delChat (chatId: string) {
-      this.chatRecords.delete(chatId)
+      this.myChatMap.delete(chatId)
     },
     getChat (chatId: string): Chat {
-      return this.chatRecords.get(chatId)!
+      return this.myChatMap.get(chatId)!
     },
     getChatList () {
       const chatList: Chat[] = []
-      if (this.chatRecords.size > 0) {
-        this.chatRecords.forEach((value) => {
+      if (this.myChatMap.size > 0) {
+        this.myChatMap.forEach((value) => {
           chatList.push(value)
         })
       }
@@ -37,10 +36,10 @@ export const useChatStore = defineStore({
     appendMessage (chatId: string, message: Message) {
       const chat = this.getChat(chatId)
       chat.messageList.push(message)
-      this.chatRecords.set(chat.id, chat)
+      this.myChatMap.set(chat.id, chat)
     }
   },
   persist: {
-    // paths: ['chatRecords']
+    paths: ['myChatMap']
   }
 })
