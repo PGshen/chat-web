@@ -2,37 +2,19 @@
   "name": "hello",
   "version": "0.1.0",
   "private": true,
-  "description": "A dashboard scaffolding based on Vue.js 3.x & TypeScript created by Vite.",
   "keywords": [
-    "Hello",
-    "dashboard",
-    "vue",
-    "vuejs",
-    "vue3",
-    "typescript",
-    "vite",
-    "zce"
+    "Hello"
   ],
   "license": "MIT",
-  "author": "zce <w@zce.me> (https://zce.me)",
   "scripts": {
     "lint": "eslint src api mock --ext .ts,.vue --fix",
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit && vite build --mode production",
+    "preview": "vite preview --port 3000 --host 0.0.0.0",
     "serve": "vite preview"
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
   },
   "lint-staged": {
     "*.{ts,vue}": "eslint --fix"
-  },
-  "renovate": {
-    "extends": [
-      "zce"
-    ]
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",

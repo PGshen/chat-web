@@ -16,7 +16,7 @@ RUN pnpm install
 RUN pnpm run build
 
 # 暴露项目的端口
-EXPOSE 8080
+EXPOSE 3000
 
 # 启动项目
 CMD ["pnpm", "run", "preview"]
