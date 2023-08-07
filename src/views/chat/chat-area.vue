@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 17:40:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-03 13:42:38
+ * @LastEditTime: 2023-08-07 20:28:19
  * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
 -->
 <template>
@@ -60,10 +60,10 @@ import { PropType, onMounted, onUpdated, ref } from 'vue'
 import { Markdown } from '@/components'
 import { Chat, Message, TripQuery } from '@/types/chat'
 import { common } from '@/utils'
-// import { useMessage } from 'naive-ui'
+import { useMessage } from 'naive-ui'
 import Api from '@/api'
 import { AirplaneOutline } from '@vicons/ionicons5'
-// import { EventSourceMessage, EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
+import { EventSourceMessage, EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
 
 const props = defineProps({
   nowChat: {
@@ -72,7 +72,7 @@ const props = defineProps({
   }
 })
 
-// const useMsg = useMessage()
+const useMsg = useMessage()
 const messages = ref([] as Message[])
 const messageIndexMap = ref(new Map<string, number>())
 const inputMsg = ref('')
@@ -92,6 +92,7 @@ const sendMsg = async () => {
   messageIndexMap.value.set(quizMsg.id, quizMsg.index)
   inputMsg.value = ''
 
+  const url = '/ai/meeting/chat'
   const replyMsg: Message = {
     index: messages.value.length,
     id: common.genRandomString(16),
@@ -101,49 +102,52 @@ const sendMsg = async () => {
   }
   messages.value.push(replyMsg)
   messageIndexMap.value.set(replyMsg.id, replyMsg.index)
-  await sendAndReceiveLlm(replyMsg.id, {
-    user: props.nowChat.id,
-    query: quizMsg.text
+  // await sendAndReceiveLlm(replyMsg.id, {
+  //   user: props.nowChat.id,
+  //   query: quizMsg.text
+  // })
+  await sendAndReceive(url, replyMsg.id, {
+    message: quizMsg.text
   })
 }
 
-// const sendAndReceive = async (url: string, messageId: string, param: {}) => {
-//   const ctrl = new AbortController()
-//   await fetchEventSource(url, {
-//     method: 'POST',
-//     headers: Api.getSettingWithCors(),
-//     body: JSON.stringify(param),
-//     signal: ctrl.signal,
-//     async onopen (response: Response) {
-//       console.log('open')
-//       if (!response.ok || response.headers.get('content-type') !== EventStreamContentType) {
-//         useMsg.error(response.statusText)
-//         throw new Error('open fail')
-//       }
-//     },
-//     onmessage (ev: EventSourceMessage) {
-//       if (ev.event === 'chat') {
-//         // 单独换行符
-//         if (ev.data === '') {
-//           ev.data = '\n'
-//         }
-//         const index = getMsgIndex(messageId)
-//         messages.value[index].text += ev.data
-//         // console.log(ev.id, ev.data);
-//         scrollToEnd()
-//       }
-//     },
-//     onclose () {
-//       const index = getMsgIndex(messageId)
-//       console.log(messages.value[index].text)
-//       console.log('close')
-//     },
-//     onerror (err: any) {
-//       console.log('error: ' + err)
-//       throw new Error(err)
-//     }
-//   })
-// }
+const sendAndReceive = async (url: string, messageId: string, param: {}) => {
+  const ctrl = new AbortController()
+  await fetchEventSource(url, {
+    method: 'POST',
+    headers: Api.getSettingWithCors(),
+    body: JSON.stringify(param),
+    signal: ctrl.signal,
+    async onopen (response: Response) {
+      console.log('open')
+      if (!response.ok || response.headers.get('content-type') !== EventStreamContentType) {
+        useMsg.error(response.statusText)
+        throw new Error('open fail')
+      }
+    },
+    onmessage (ev: EventSourceMessage) {
+      if (ev.event === 'chat') {
+        // 单独换行符
+        if (ev.data === '') {
+          ev.data = '\n'
+        }
+        const index = getMsgIndex(messageId)
+        messages.value[index].text += ev.data
+        // console.log(ev.id, ev.data);
+        scrollToEnd()
+      }
+    },
+    onclose () {
+      const index = getMsgIndex(messageId)
+      console.log(messages.value[index].text)
+      console.log('close')
+    },
+    onerror (err: any) {
+      console.log('error: ' + err)
+      throw new Error(err)
+    }
+  })
+}
 
 const sendAndReceiveLlm = (messageId: string, param: TripQuery) => {
   Api.tripQuery(param)

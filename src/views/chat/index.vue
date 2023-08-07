@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-28 00:17:20
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-03 00:34:18
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-07 20:38:48
  * @FilePath: /ai-tool-web/src/views/chat/index.vue
 -->
 <template>
