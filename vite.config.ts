@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-27 22:35:12
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-02 23:59:20
+ * @LastEditTime: 2023-08-07 22:02:44
  * @FilePath: /ai-tool-web/vite.config.ts
  */
 /**
@@ -55,10 +55,10 @@ export default defineConfig({
     proxy: {
       '/ai': {
         // target: 'http://gpt-meeting-service:8000',
-        // target: 'http://0.0.0.0:8000',
-        target: 'http://13.228.14.55:5000',
+        target: 'http://0.0.0.0:8000',
+        // target: 'http://13.228.14.55:5000',
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/ai/, '')
+        rewrite: (path: string) => path.replace(/^\/ai/, '/api')
       }
     }
   }

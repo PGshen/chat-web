@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 17:40:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-07 20:28:19
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-08-08 00:06:07
  * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
 -->
 <template>
@@ -124,6 +124,8 @@ const sendAndReceive = async (url: string, messageId: string, param: {}) => {
         useMsg.error(response.statusText)
         throw new Error('open fail')
       }
+      const index = getMsgIndex(messageId)
+        messages.value[index].text = ''
     },
     onmessage (ev: EventSourceMessage) {
       if (ev.event === 'chat') {
@@ -213,6 +215,7 @@ onUpdated(() => {
 
 .message-box {
   width: 80%;
+  max-width: 800px;
   display: flex;
   align-items: flex-start;
 }
