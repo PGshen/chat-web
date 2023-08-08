@@ -1,43 +1,45 @@
 <!--
  * @Date: 2023-07-29 17:40:22
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-08 00:06:07
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-08 20:35:22
  * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
 -->
 <template>
   <div class="display-area">
     <div class="chat-box">
-      <div v-for="(message, index) in messages" :key="index" class="message" :class="{ 'self': message.isSelf }">
-        <div class="message-box">
-          <div class="message-avator">
-            <n-avatar
-              v-if="message.isSelf"
-              size="small"
-              src="oopp.jpg"
-            />
-            <n-avatar
-              v-else
-              size="small"
-              src="logo.png"
-            />
-          </div>
-          <div class="message-text">
-            <Markdown
-              :text="message.text"
-              :as-raw-text="false"
-            />
+      <!-- <n-scrollbar> -->
+        <div v-for="(message, index) in messages" :key="index" class="message" :class="{ 'self': message.isSelf }">
+          <div class="message-box">
+            <div class="message-avator">
+              <n-avatar
+                v-if="message.isSelf"
+                size="small"
+                src="oopp.jpg"
+              />
+              <n-avatar
+                v-else
+                size="small"
+                src="logo.png"
+              />
+            </div>
+            <div class="message-text">
+              <Markdown
+                :text="message.text"
+                :as-raw-text="false"
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div v-if="messages && messages.length === 0" style="height: 100%; display: flex; justify-content: center; align-items: center;">
-        <n-empty description="向我提问吧～">
-          <template #icon>
-            <n-icon>
-              <AirplaneOutline />
-            </n-icon>
-          </template>
-        </n-empty>
-      </div>
+        <div v-if="messages && messages.length === 0" style="height: 100%; display: flex; justify-content: center; align-items: center;">
+          <n-empty description="向我提问吧～">
+            <template #icon>
+              <n-icon>
+                <AirplaneOutline />
+              </n-icon>
+            </template>
+          </n-empty>
+        </div>
+      <!-- </n-scrollbar> -->
     </div>
     <div class="send-box">
       <n-input
@@ -47,6 +49,7 @@
           minRows: 1,
           maxRows: 5
         }" class="input-area"
+        :disabled="messages === undefined"
       />
       <n-button strong secondary type="primary" class="btn-area" @click="sendMsg()">
         发送
@@ -243,5 +246,20 @@ onUpdated(() => {
 
 .btn-area {
   width: 80px;
+}
+</style>
+
+<style>
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c3c3c3;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
 }
 </style>

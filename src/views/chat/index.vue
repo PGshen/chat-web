@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-28 00:17:20
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-07 20:38:48
+ * @LastEditTime: 2023-08-08 20:19:18
  * @FilePath: /ai-tool-web/src/views/chat/index.vue
 -->
 <template>
@@ -12,9 +12,9 @@
       :width="240"
       :show-collapsed-content="false"
       show-trigger="bar"
-      :bordered="!collapsed"
-      :collapsed="collapsed"
-      @update:collapsed="toggle"
+      :bordered="!chatListCollapsed"
+      :collapsed="chatListCollapsed"
+      @update:collapsed="toggleChatList"
     >
       <chat-sider
         :chat-list="chatList"
@@ -24,18 +24,27 @@
         @refresh-chat="refreshChat"
       />
     </n-layout-sider>
-    <n-layout-content>
-      <div class="chat">
-        <div class="chat-area">
-          <chat-area
-            :now-chat="nowChat"
-          />
-        </div>
+    <n-layout has-sider sider-placement="right">
+      <n-layout>
+        <chat-area
+          :now-chat="nowChat"
+        />
+      </n-layout>
+      <n-layout-sider
+        collapse-mode="transform"
+        :collapsed-width="0"
+        :width="240"
+        :show-collapsed-content="false"
+        show-trigger="arrow-circle"
+        :bordered="!chatSettingCollapsed"
+        :collapsed="chatSettingCollapsed"
+        @update:collapsed="toggleChatSetting"
+      >
         <div class="chat-setting">
           <chat-seting />
         </div>
-      </div>
-    </n-layout-content>
+      </n-layout-sider>
+    </n-layout>
   </n-layout>
   <n-modal
     v-model:show="newChatModal"
@@ -64,7 +73,8 @@ import ChatSeting from './chat-setting.vue'
 import ChatArea from './chat-area.vue'
 
 const chatStore = useChatStore()
-const collapsed = ref(false)
+const chatListCollapsed = ref(false)
+const chatSettingCollapsed = ref(false)
 const newChatModal = ref(false)
 const newChatTitle = ref('')
 const chatList = ref([] as Chat[])
@@ -98,8 +108,12 @@ const refreshChat = () => {
   chatList.value = chatStore.getChatList()
 }
 
-const toggle = () => {
-  collapsed.value = !collapsed.value
+const toggleChatList = () => {
+  chatListCollapsed.value = !chatListCollapsed.value
+}
+
+const toggleChatSetting = () => {
+  chatSettingCollapsed.value = !chatSettingCollapsed.value
 }
 
 onMounted(() => {
@@ -108,16 +122,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.chat {
-  width: 100%;
-  height: 100%;
-  display: flex;
-}
-
-.chat-area {
-  // flex: 1;
-  width: calc(100% - 240px);
-}
 
 .chat-setting {
   width: 240px;

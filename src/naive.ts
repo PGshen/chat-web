@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-27 22:35:12
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-02 23:43:35
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-08 20:25:36
  * @FilePath: /ai-tool-web/src/naive.ts
  */
 import {
@@ -49,7 +49,8 @@ import {
   NSelect,
   NSlider,
   NModal,
-  NEmpty
+  NEmpty,
+  NScrollbar
 } from 'naive-ui'
 
 export default create({
@@ -96,6 +97,7 @@ export default create({
     NSlider,
     NModal,
     NCard,
-    NEmpty
+    NEmpty,
+    NScrollbar
   ]
 })
