@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-27 22:35:12
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-07 22:02:44
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-10 18:29:24
  * @FilePath: /ai-tool-web/vite.config.ts
  */
 /**
@@ -12,15 +12,6 @@
 import { defineConfig, Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import * as path from 'path'
-import mockApp from './mock'
-
-const mock = (): Plugin => ({
-  name: 'mock',
-  configureServer: async server => {
-    // mount mock server, `/api` is the base url
-    server.middlewares.use('/api', mockApp)
-  }
-})
 
 export default defineConfig({
   resolve: {
@@ -35,7 +26,7 @@ export default defineConfig({
       }
     }
   },
-  plugins: [vue(), mock()],
+  plugins: [vue()],
   build: {
     rollupOptions: {
       output: {
@@ -54,11 +45,14 @@ export default defineConfig({
     // 设置代理
     proxy: {
       '/ai': {
-        // target: 'http://gpt-meeting-service:8000',
         target: 'http://0.0.0.0:8000',
-        // target: 'http://13.228.14.55:5000',
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/ai/, '/api')
+        rewrite: (path: string) => path.replace(/^\/ai/, '')
+      },
+      '/openai': {
+        target: 'https://api.openai.com',
+        changeOrigin: true,
+        rewrite: (path: string) => path.replace(/^\/openai/, '')
       }
     }
   }

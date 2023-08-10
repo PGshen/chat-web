@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 17:40:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-08 20:35:22
+ * @LastEditTime: 2023-08-10 19:49:46
  * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
 -->
 <template>
@@ -67,6 +67,8 @@ import { useMessage } from 'naive-ui'
 import Api from '@/api'
 import { AirplaneOutline } from '@vicons/ionicons5'
 import { EventSourceMessage, EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
+import { useSettingStore } from '@/store/setting'
+import { useChatStore } from '@/store/chat'
 
 const props = defineProps({
   nowChat: {
@@ -75,6 +77,8 @@ const props = defineProps({
   }
 })
 
+const settingStore = useSettingStore()
+const chatStore = useChatStore()
 const useMsg = useMessage()
 const messages = ref([] as Message[])
 const messageIndexMap = ref(new Map<string, number>())
@@ -109,8 +113,70 @@ const sendMsg = async () => {
   //   user: props.nowChat.id,
   //   query: quizMsg.text
   // })
-  await sendAndReceive(url, replyMsg.id, {
-    message: quizMsg.text
+  // await sendAndReceive(url, replyMsg.id, {
+  //   message: quizMsg.text
+  // })
+  const chatHistoryMessage = chatStore.getChatHistoryMessage(props.nowChat.id, 5)
+  let hisMsg = [];
+  chatHistoryMessage.forEach((message) => {
+    hisMsg.push({
+      role: message.isSelf ? 'user' : 'assistant',
+      content: message.text
+    })
+  })
+  hisMsg.push({
+    role: 'user',
+    content: quizMsg.text
+  })
+  // 向下滚动
+  scrollToEnd()
+  await sendOpenAi('/openai/v1/chat/completions', replyMsg.id, {
+    model: settingStore.getSetting().model,
+    messages: hisMsg,
+    stream: true
+  })
+}
+
+const sendOpenAi = async (url: string, messageId: string, param: {}) => {
+  const ctrl = new AbortController()
+  await fetchEventSource(url, {
+    method: 'POST',
+    headers: Api.getSettingWithCors(),
+    body: JSON.stringify(param),
+    signal: ctrl.signal,
+    async onopen (response: Response) {
+      console.log('open')
+      if (!response.ok || response.headers.get('content-type') !== EventStreamContentType) {
+        useMsg.error(response.statusText)
+        throw new Error('open fail')
+      }
+      const index = getMsgIndex(messageId)
+        messages.value[index].text = ''
+    },
+    onmessage (ev: EventSourceMessage) {
+        // 单独换行符
+        if (ev.data === '[DONE]') {
+          // ev.data = '\n'
+          return
+        }
+        const objJson = JSON.parse(ev.data)
+        const choice = objJson['choices'][0]
+        if (choice['finish_reason'] === null) {
+          const index = getMsgIndex(messageId)
+          messages.value[index].text += choice['delta']['content']
+          // console.log(ev.id, ev.data);
+          scrollToEnd()
+        }
+    },
+    onclose () {
+      const index = getMsgIndex(messageId)
+      console.log(messages.value[index].text)
+      console.log('close')
+    },
+    onerror (err: any) {
+      console.log('error: ' + err)
+      throw new Error(err)
+    }
   })
 }
 
@@ -186,6 +252,7 @@ onMounted(() => {
 
 onUpdated(() => {
   messages.value = props.nowChat.messageList
+  scrollToEnd()
 })
 
 </script>

@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-02 21:30:30
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-03 13:41:48
+ * @LastEditTime: 2023-08-10 19:07:32
  * @FilePath: /ai-tool-web/src/store/chat.ts
  */
 import { Chat, Message } from '@/types/chat'
@@ -37,6 +37,13 @@ export const useChatStore = defineStore({
       const chat = this.getChat(chatId)
       chat.messageList.push(message)
       this.myChatMap.set(chat.id, chat)
+    },
+    getChatHistoryMessage(chatId: string, count: number) {
+      const messageList = this.getChat(chatId).messageList
+      const num = count < messageList.length ? count : messageList.length
+      const ret = messageList.slice(-num-2, -2);
+      console.log(ret)
+      return ret
     }
   },
   persist: {
