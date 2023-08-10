@@ -11,8 +11,6 @@
   },
   "include": [
     "api/**/*.ts",
-    "mock/**/*.ts",
-    "mock/**/*.d.ts",
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.vue",
