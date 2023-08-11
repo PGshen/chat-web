@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-29 22:33:40
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-03 00:10:07
+ * @LastEditTime: 2023-08-11 09:50:26
  * @FilePath: /ai-tool-web/src/types/chat.ts
  */
 // 单个消息
@@ -28,4 +28,19 @@ export interface TripQuery {
 
 export interface TripReply {
   message: string
+}
+
+export interface OpenAiMessage {
+  role: string
+  content: string
+}
+
+export interface OpenAiChatQuery {
+  model: string
+  messages: OpenAiMessage[]
+  stream: boolean
+}
+
+export interface OpenAiChatReply {
+  code: string
 }

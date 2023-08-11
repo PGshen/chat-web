@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 17:40:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-10 19:49:46
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-08-11 09:52:05
  * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
 -->
 <template>
@@ -41,19 +41,21 @@
         </div>
       <!-- </n-scrollbar> -->
     </div>
-    <div class="send-box">
-      <n-input
-        v-model:value="inputMsg"
-        type="textarea"
-        :autosize="{
-          minRows: 1,
-          maxRows: 5
-        }" class="input-area"
-        :disabled="messages === undefined"
-      />
-      <n-button strong secondary type="primary" class="btn-area" @click="sendMsg()">
-        发送
-      </n-button>
+    <div class="send-area">
+      <div class="send-box">
+        <n-input
+          v-model:value="inputMsg"
+          type="textarea"
+          :autosize="{
+            minRows: 1,
+            maxRows: 5
+          }" class="input-area"
+          :disabled="messages === undefined"
+        />
+        <n-button strong secondary type="primary" class="btn-area" @click="sendMsg()">
+          发送
+        </n-button>
+      </div>
     </div>
   </div>
 </template>
@@ -135,6 +137,10 @@ const sendMsg = async () => {
     messages: hisMsg,
     stream: true
   })
+  // 对话名称总结
+  if (messages.value.length == 2) {
+    
+  }
 }
 
 const sendOpenAi = async (url: string, messageId: string, param: {}) => {
@@ -299,7 +305,14 @@ onUpdated(() => {
   width: calc(100% - 35px);
 }
 
+.send-area {
+  display: flex;
+  justify-content: center;
+}
+
 .send-box {
+  width: 80%;
+  max-width: 800px;
   display: flex;
   align-items: flex-end;
   border-top: 1px solid rgb(244, 247, 247);
@@ -319,6 +332,7 @@ onUpdated(() => {
 <style>
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
   background-color: #f5f5f5;
 }
 
