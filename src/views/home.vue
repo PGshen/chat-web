@@ -1,3 +1,9 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Date: 2023-07-27 19:40:33
+ * @LastEditTime: 2023-08-11 19:02:26
+-->
 <!-- Home -->
 
 <template>
@@ -8,29 +14,18 @@
     size="huge"
   >
     <template #footer>
-      <!-- <n-p v-if="currentUser1">Hey1, {{ currentUser1.name }}</n-p>
-      <n-p v-if="currentUser2">Hey2, {{ currentUser2.name }}</n-p>
-      <n-p v-if="currentUser3">Hey3, {{ currentUser3.name }}</n-p> -->
       <n-button @click="handleClick">Just So So</n-button>
     </template>
   </n-result>
 </template>
 
 <script lang="ts" setup>
-// import { ref } from 'vue'
-// import { useCurrentUser, User } from '../composables'
 import { useMessage } from 'naive-ui'
 
-// const currentUser1 = ref<User | null>(null)
-// const currentUser2 = ref<User | null>(null)
-// const currentUser3 = ref<User | null>(null)
 const message = useMessage()
 
 const handleClick = (): void => {
   message.success('Just So So')
-  // const {  } = useCurrentUser()
-  // const {  } = useCurrentUser()
-  // const {  } = useCurrentUser()
 }
 </script>
 

@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 15:46:16
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-02 23:24:09
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-11 18:26:54
  * @FilePath: /ai-tool-web/src/views/chat/chat-setting.vue
 -->
 <template>
@@ -29,6 +29,9 @@
         </n-form-item-row>
         <n-form-item-row label="最大token数">
           <n-slider v-model:value="setting.maxToken" :min="516" :max="16384" :step="100" />
+        </n-form-item-row>
+        <n-form-item-row label="携带历史消息数">
+          <n-slider v-model:value="setting.hisMsgCnt" :min="3" :max="20" :step="1" />
         </n-form-item-row>
       </n-form>
       <n-button type="primary" block secondary strong @click="updateSetting()">

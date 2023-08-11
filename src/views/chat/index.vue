@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-28 00:17:20
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-08 20:19:18
+ * @LastEditTime: 2023-08-11 18:59:58
  * @FilePath: /ai-tool-web/src/views/chat/index.vue
 -->
 <template>
@@ -19,7 +19,7 @@
       <chat-sider
         :chat-list="chatList"
         :now-chat-id="nowChat.id"
-        @new-chat="newChatModal = true"
+        @new-chat="newChat"
         @open-chat="openChat"
         @refresh-chat="refreshChat"
       />
@@ -46,21 +46,6 @@
       </n-layout-sider>
     </n-layout>
   </n-layout>
-  <n-modal
-    v-model:show="newChatModal"
-    preset="dialog"
-    positive-text="确认"
-    @positive-click="newChat()"
-  >
-    <template #header>
-      <div>新会话</div>
-    </template>
-    <n-form>
-      <n-form-item-row>
-        <n-input v-model:value="newChatTitle" type="textarea" placeholder="输入主题" />
-      </n-form-item-row>
-    </n-form>
-  </n-modal>
 </template>
 
 <script lang="ts" setup>
@@ -74,38 +59,36 @@ import ChatArea from './chat-area.vue'
 
 const chatStore = useChatStore()
 const chatListCollapsed = ref(false)
-const chatSettingCollapsed = ref(false)
+const chatSettingCollapsed = ref(true)
 const newChatModal = ref(false)
-const newChatTitle = ref('')
 const chatList = ref([] as Chat[])
 const nowChat = ref({} as Chat)
 
 const newChat = () => {
-  if (newChatTitle.value === '') {
-    return ''
-  }
   const chat: Chat = {
     id: common.genRandomString(16),
-    title: newChatTitle.value,
+    title: '新的对话',
     messageList: [],
     time: Date.now() / 1000
   }
   chatStore.newChat(chat)
-  newChatTitle.value = ''
   newChatModal.value = false
-  console.log(chat)
+  // console.log(chat)
   refreshChat()
   openChat(chat.id)
 }
 
 const openChat = (chatId: string) => {
   const chat = chatStore.getChat(chatId)
-  console.log(chat)
+  // console.log(chat)
   nowChat.value = chat
 }
 
 const refreshChat = () => {
   chatList.value = chatStore.getChatList()
+  if (!chatList.value.includes(nowChat.value)) {
+    nowChat.value = {} as Chat
+  }
 }
 
 const toggleChatList = () => {

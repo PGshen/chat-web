@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 17:40:22
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-11 09:52:05
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-11 19:04:22
  * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
 -->
 <template>
@@ -51,6 +51,8 @@
             maxRows: 5
           }" class="input-area"
           :disabled="messages === undefined"
+          placeholder="Ctrl + Enter发送消息"
+          @keyup="sendByKeyUp"
         />
         <n-button strong secondary type="primary" class="btn-area" @click="sendMsg()">
           发送
@@ -63,7 +65,7 @@
 <script lang="ts" setup>
 import { PropType, onMounted, onUpdated, ref } from 'vue'
 import { Markdown } from '@/components'
-import { Chat, Message, TripQuery } from '@/types/chat'
+import { Chat, Message, OpenAiChatQuery, OpenAiMessage, TripQuery } from '@/types/chat'
 import { common } from '@/utils'
 import { useMessage } from 'naive-ui'
 import Api from '@/api'
@@ -79,6 +81,8 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['refreshChat'])
+
 const settingStore = useSettingStore()
 const chatStore = useChatStore()
 const useMsg = useMessage()
@@ -86,10 +90,17 @@ const messages = ref([] as Message[])
 const messageIndexMap = ref(new Map<string, number>())
 const inputMsg = ref('')
 
+const sendByKeyUp = (event: KeyboardEvent) => {
+  if (event.ctrlKey && event.key === 'Enter') {
+    sendMsg();
+  }
+}
+
 const sendMsg = async () => {
   if (inputMsg.value === '') {
     return
   }
+  const setting = settingStore.getSetting()
   const quizMsg: Message = {
     index: messages.value.length,
     id: common.genRandomString(16),
@@ -118,28 +129,54 @@ const sendMsg = async () => {
   // await sendAndReceive(url, replyMsg.id, {
   //   message: quizMsg.text
   // })
-  const chatHistoryMessage = chatStore.getChatHistoryMessage(props.nowChat.id, 5)
-  let hisMsg = [];
+  const chatHistoryMessage = chatStore.getChatHistoryMessage(props.nowChat.id, setting.hisMsgCnt)
+  const hisMsg: OpenAiMessage[] = [];
   chatHistoryMessage.forEach((message) => {
     hisMsg.push({
       role: message.isSelf ? 'user' : 'assistant',
       content: message.text
     })
   })
-  hisMsg.push({
+  const sendMsg = hisMsg
+  sendMsg.push({
     role: 'user',
     content: quizMsg.text
   })
   // 向下滚动
   scrollToEnd()
   await sendOpenAi('/openai/v1/chat/completions', replyMsg.id, {
-    model: settingStore.getSetting().model,
-    messages: hisMsg,
+    model: setting.model,
+    messages: sendMsg,
     stream: true
   })
   // 对话名称总结
   if (messages.value.length == 2) {
-    
+    const tempMsg = []
+    messages.value.forEach((message) => {
+      tempMsg.push({
+        role: message.isSelf ? 'user' : 'assistant',
+        content: message.text
+      })
+    })
+    tempMsg.push({
+      'role': 'user',
+      'content': '用10个字以内直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，如果没有主题，请直接返回“闲聊'
+    })
+    const params: OpenAiChatQuery = {
+      model: setting.model,
+      messages: tempMsg,
+      temperature: setting.temperature,
+      stream: false
+    }
+    Api.openAiCompletions(params)
+      .then((data) => {
+        const chatTitle = data.choices[0].message.content
+        console.log(chatTitle)
+        chatStore.updateChatTitle(props.nowChat.id, chatTitle)
+        emit('refreshChat')
+      }).catch((err) => {
+        console.log(err)
+      })
   }
 }
 
@@ -329,18 +366,3 @@ onUpdated(() => {
 }
 </style>
 
-<style>
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-  background-color: #f5f5f5;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #c3c3c3;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #999;
-}
-</style>

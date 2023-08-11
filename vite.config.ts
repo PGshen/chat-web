@@ -1,15 +1,11 @@
 /*
  * @Date: 2023-07-27 22:35:12
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-10 18:29:24
+ * @LastEditTime: 2023-08-11 19:06:45
  * @FilePath: /ai-tool-web/vite.config.ts
  */
-/**
- * Vite configuaration file
- * https://vitejs.dev/config/
- */
 
-import { defineConfig, Plugin } from 'vite'
+import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import * as path from 'path'
 

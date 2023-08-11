@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-28 09:46:28
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-03 00:35:53
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-11 18:57:53
  * @FilePath: /ai-tool-web/src/views/chat/chat-sider.vue
 -->
 <template>
@@ -11,22 +11,24 @@
         New Chat
       </n-button>
     </div>
-    <div class="chat-list">
-      <div
-        v-for="item in chatList" :key="item.id" class="chat-item" :class="{ 'selected': nowChatId == item.id }"
-        @click="openChat(item.id)"
-      >
-        <div class="close-btn" @click.stop="delChat(item.id)">
-          <n-icon :size="18" :component="CloseCircleOutline" />
+    <n-scrollbar>
+      <div class="chat-list">
+        <div
+          v-for="item in chatList" :key="item.id" class="chat-item" :class="{ 'selected': nowChatId == item.id }"
+          @click="openChat(item.id)"
+        >
+          <div class="close-btn" @click.stop="delChat(item.id)">
+            <n-icon :size="18" :component="CloseCircleOutline" />
+          </div>
+          <div>
+            <n-ellipsis :line-clamp="2">
+              {{ item.title }}
+            </n-ellipsis>
+          </div>
+          <div style="font-size: 10px; text-align: end;">{{ common.formatTime(item.time) }}</div>
         </div>
-        <div>
-          <n-ellipsis :line-clamp="2">
-            {{ item.title }}
-          </n-ellipsis>
-        </div>
-        <div style="font-size: 10px; text-align: end;">{{ common.formatTime(item.time) }}</div>
       </div>
-    </div>
+    </n-scrollbar>
   </div>
 </template>
 

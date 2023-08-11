@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-29 19:18:04
- * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-07-29 22:59:49
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-11 18:25:52
  * @FilePath: /ai-tool-web/src/store/setting.ts
  */
 import { Setting } from '@/types/setting'
@@ -16,7 +16,8 @@ export const useSettingStore = defineStore({
         model: 'gpt-3.5-turbo',
         temperature: 0,
         presencePenalty: 0,
-        maxToken: 1024
+        maxToken: 1024,
+        hisMsgCnt: 6
       } as Setting
     }
   },

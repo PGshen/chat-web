@@ -2,7 +2,7 @@
  * @Descripttion:
  * @version:
  * @Date: 2023-04-29 22:27:47
- * @LastEditTime: 2023-08-03 00:20:07
+ * @LastEditTime: 2023-08-11 18:59:31
  */
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import { useMessage } from 'naive-ui'
@@ -14,6 +14,7 @@ axios.defaults.headers.common.apiKey = setting.apiKey
 axios.defaults.headers.common.model = setting.model
 axios.defaults.headers.common.temperature = setting.temperature
 axios.defaults.headers.common.presencePenalty = setting.presencePenalty
+axios.defaults.headers.common.Authorization = 'Bearer ' + setting.apiKey
 
 const service = axios.create()
 
@@ -31,7 +32,7 @@ service.interceptors.request.use(
 // Response interceptors
 service.interceptors.response.use(
   async (response: AxiosResponse) => {
-    console.log(response)
+    // console.log(response)
     if (response.status !== 200) {
       useMessage().error('Request error!')
     }
