@@ -2,10 +2,12 @@
  * @Descripttion: 
  * @version: 
  * @Date: 2023-07-27 19:40:33
- * @LastEditTime: 2023-08-12 21:12:04
+ * @LastEditTime: 2023-08-12 21:33:10
 -->
 # chat-web
 一个简单的chat-web
+
+![chat-web](./public/chatweb.png)
 
 ## 技术栈
 - 语言：TypeScript
