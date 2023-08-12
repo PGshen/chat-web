@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-02 21:30:30
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-11 17:52:38
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-08-12 20:36:07
  * @FilePath: /ai-tool-web/src/store/chat.ts
  */
 import { Chat, Message } from '@/types/chat'
@@ -43,12 +43,18 @@ export const useChatStore = defineStore({
       chat.title = title
       this.myChatMap.set(chat.id, chat)
     },
-    getChatHistoryMessage(chatId: string, count: number) {
+    getChatHistoryMessage(chatId: string, count: number, lastIndex: number) {
       const messageList = this.getChat(chatId).messageList
       const num = count < messageList.length ? count : messageList.length
-      const ret = messageList.slice(-num-2, -2);
-      console.log(ret)
-      return ret
+      if (lastIndex > 0) {  // 指定中间的
+        const ret = messageList.slice(0, lastIndex).slice(-num-2, -2)
+        // console.log(ret)
+        return ret
+      } else {
+        const ret = messageList.slice(-num-2, -2);
+        // console.log(ret)
+        return ret
+      }
     }
   },
   persist: {

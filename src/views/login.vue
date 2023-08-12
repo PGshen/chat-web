@@ -1,3 +1,9 @@
+<!--
+ * @Date: 2023-07-27 22:42:45
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-08-12 17:29:15
+ * @FilePath: /ai-tool-web/src/views/login.vue
+-->
 <!-- Sign In -->
 
 <template>
@@ -23,7 +29,6 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMessage } from 'naive-ui'
-import { token } from '../utils'
 
 const router = useRouter()
 const message = useMessage()
@@ -42,8 +47,8 @@ const rules = {
 }
 
 const model = ref({
-  username: 'zce',
-  password: 'wanglei'
+  username: 'chat',
+  password: 'chat1234'
 })
 
 const loading = ref(false)
@@ -54,7 +59,6 @@ const handleLogin = async (e: Event): Promise<void> => {
   e.preventDefault()
   loading.value = true
   try {
-    await token.authenticate(model.value.username, model.value.password)
     const route = router.currentRoute.value
     const redirect = route.query.redirect?.toString()
     await router.replace(redirect ?? route.redirectedFrom?.fullPath ?? '/')

@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-29 22:33:40
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-11 17:50:55
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-08-12 18:39:44
  * @FilePath: /ai-tool-web/src/types/chat.ts
  */
 // 单个消息
@@ -10,6 +10,7 @@ export interface Message {
   id: string
   text: string
   isSelf: boolean
+  isEditing: boolean
   time: number
 }
 

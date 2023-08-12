@@ -1,45 +1,66 @@
 <!--
  * @Date: 2023-07-29 17:40:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-08-11 19:04:22
+ * @LastEditors: peng pgs1108pgs@126.com
+ * @LastEditTime: 2023-08-12 20:48:32
  * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
 -->
 <template>
   <div class="display-area">
-    <div class="chat-box">
-      <!-- <n-scrollbar> -->
-        <div v-for="(message, index) in messages" :key="index" class="message" :class="{ 'self': message.isSelf }">
-          <div class="message-box">
-            <div class="message-avator">
-              <n-avatar
-                v-if="message.isSelf"
-                size="small"
-                src="oopp.jpg"
-              />
-              <n-avatar
-                v-else
-                size="small"
-                src="logo.png"
-              />
+    <div ref="containerRef" class="chat-box">
+      <div v-for="(message, index) in messages" :key="index" class="message" :class="{ 'self': message.isSelf }">
+        <div class="message-box">
+          <div class="message-avator">
+            <n-avatar
+              v-if="message.isSelf"
+              size="small"
+              src="oopp.jpg"
+            />
+            <n-avatar
+              v-else
+              size="small"
+              src="logo.png"
+            />
+          </div>
+          <div class="message-text">
+            <div v-if="message.isEditing">
+              <n-space vertical>
+                <n-input
+                  v-model:value="message.text"
+                  type="textarea"
+                  autosize
+                />
+                <n-space>
+                  <n-button type="primary" size="small" style="padding: 0px 8px;" @click="resendMsg(message.index)">
+                    保存 & 提交
+                  </n-button>
+                  <n-button size="small" style="padding: 0px 8px;" @click="message.isEditing = false">
+                    取消
+                  </n-button>
+                </n-space>
+              </n-space>
             </div>
-            <div class="message-text">
+            <div v-else>
               <Markdown
                 :text="message.text"
                 :as-raw-text="false"
               />
             </div>
           </div>
+          <div class="message-action">
+            <n-icon v-if="message.isSelf" :size="18" :component="CreateOutline" @click="message.isEditing = true" />
+            <n-icon v-else :size="18" :component="CopyOutline" @click="copyMsg(message.text)" />
+          </div>
         </div>
-        <div v-if="messages && messages.length === 0" style="height: 100%; display: flex; justify-content: center; align-items: center;">
-          <n-empty description="向我提问吧～">
-            <template #icon>
-              <n-icon>
-                <AirplaneOutline />
-              </n-icon>
-            </template>
-          </n-empty>
-        </div>
-      <!-- </n-scrollbar> -->
+      </div>
+      <div v-if="messages && messages.length === 0" style="height: 100%; display: flex; justify-content: center; align-items: center;">
+        <n-empty description="向我提问吧～">
+          <template #icon>
+            <n-icon>
+              <AirplaneOutline />
+            </n-icon>
+          </template>
+        </n-empty>
+      </div>
     </div>
     <div class="send-area">
       <div class="send-box">
@@ -47,7 +68,7 @@
           v-model:value="inputMsg"
           type="textarea"
           :autosize="{
-            minRows: 1,
+            minRows: 2,
             maxRows: 5
           }" class="input-area"
           :disabled="messages === undefined"
@@ -55,7 +76,8 @@
           @keyup="sendByKeyUp"
         />
         <n-button strong secondary type="primary" class="btn-area" @click="sendMsg()">
-          发送
+          发送 &nbsp;
+          <n-icon :size="18" :component="Send" />
         </n-button>
       </div>
     </div>
@@ -65,14 +87,15 @@
 <script lang="ts" setup>
 import { PropType, onMounted, onUpdated, ref } from 'vue'
 import { Markdown } from '@/components'
-import { Chat, Message, OpenAiChatQuery, OpenAiMessage, TripQuery } from '@/types/chat'
+import { Chat, Message, OpenAiChatQuery, OpenAiMessage } from '@/types/chat'
 import { common } from '@/utils'
 import { useMessage } from 'naive-ui'
 import Api from '@/api'
-import { AirplaneOutline } from '@vicons/ionicons5'
+import { AirplaneOutline, CopyOutline, Send, CreateOutline } from '@vicons/ionicons5'
 import { EventSourceMessage, EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
 import { useSettingStore } from '@/store/setting'
 import { useChatStore } from '@/store/chat'
+import { copyToClip } from '@/utils/common'
 
 const props = defineProps({
   nowChat: {
@@ -86,16 +109,18 @@ const emit = defineEmits(['refreshChat'])
 const settingStore = useSettingStore()
 const chatStore = useChatStore()
 const useMsg = useMessage()
+const containerRef = ref<HTMLElement>()
 const messages = ref([] as Message[])
-const messageIndexMap = ref(new Map<string, number>())
 const inputMsg = ref('')
 
+// 快捷键
 const sendByKeyUp = (event: KeyboardEvent) => {
   if (event.ctrlKey && event.key === 'Enter') {
     sendMsg();
   }
 }
 
+// 发送消息
 const sendMsg = async () => {
   if (inputMsg.value === '') {
     return
@@ -106,30 +131,25 @@ const sendMsg = async () => {
     id: common.genRandomString(16),
     text: inputMsg.value,
     isSelf: true,
+    isEditing: false,
     time: Date.now() / 1000
   }
   messages.value.push(quizMsg)
-  messageIndexMap.value.set(quizMsg.id, quizMsg.index)
   inputMsg.value = ''
 
-  const url = '/ai/meeting/chat'
   const replyMsg: Message = {
     index: messages.value.length,
     id: common.genRandomString(16),
-    text: '思考中...',
+    text: 'Thinking...',
     isSelf: false,
+    isEditing: false,
     time: Date.now() / 1000
   }
   messages.value.push(replyMsg)
-  messageIndexMap.value.set(replyMsg.id, replyMsg.index)
-  // await sendAndReceiveLlm(replyMsg.id, {
-  //   user: props.nowChat.id,
-  //   query: quizMsg.text
-  // })
-  // await sendAndReceive(url, replyMsg.id, {
-  //   message: quizMsg.text
-  // })
-  const chatHistoryMessage = chatStore.getChatHistoryMessage(props.nowChat.id, setting.hisMsgCnt)
+  // 向下滚动
+  scrollToEnd()
+  
+  const chatHistoryMessage = chatStore.getChatHistoryMessage(props.nowChat.id, setting.hisMsgCnt, 0)
   const hisMsg: OpenAiMessage[] = [];
   chatHistoryMessage.forEach((message) => {
     hisMsg.push({
@@ -142,9 +162,7 @@ const sendMsg = async () => {
     role: 'user',
     content: quizMsg.text
   })
-  // 向下滚动
-  scrollToEnd()
-  await sendOpenAi('/openai/v1/chat/completions', replyMsg.id, {
+  await sendOpenAi('/openai/v1/chat/completions', replyMsg.index, {
     model: setting.model,
     messages: sendMsg,
     stream: true
@@ -180,7 +198,33 @@ const sendMsg = async () => {
   }
 }
 
-const sendOpenAi = async (url: string, messageId: string, param: {}) => {
+// 重新发送
+const resendMsg =async (index:number) => {
+  messages.value[index].isEditing = false
+  const setting = settingStore.getSetting()
+  const chatHistoryMessage = chatStore.getChatHistoryMessage(props.nowChat.id, setting.hisMsgCnt, index+2)
+  const hisMsg: OpenAiMessage[] = [];
+  chatHistoryMessage.forEach((message) => {
+    hisMsg.push({
+      role: message.isSelf ? 'user' : 'assistant',
+      content: message.text
+    })
+  })
+  const sendMsg = hisMsg
+  sendMsg.push({
+    role: 'user',
+    content: messages.value[index].text
+  })
+  await sendOpenAi('/openai/v1/chat/completions', index+1, {
+    model: setting.model,
+    messages: sendMsg,
+    stream: true
+  })
+}
+
+// 请求openai
+const sendOpenAi = async (url: string, index: number, param: {}) => {
+  console.log('index ' + index)
   const ctrl = new AbortController()
   await fetchEventSource(url, {
     method: 'POST',
@@ -193,8 +237,7 @@ const sendOpenAi = async (url: string, messageId: string, param: {}) => {
         useMsg.error(response.statusText)
         throw new Error('open fail')
       }
-      const index = getMsgIndex(messageId)
-        messages.value[index].text = ''
+      messages.value[index].text = ''
     },
     onmessage (ev: EventSourceMessage) {
         // 单独换行符
@@ -205,14 +248,12 @@ const sendOpenAi = async (url: string, messageId: string, param: {}) => {
         const objJson = JSON.parse(ev.data)
         const choice = objJson['choices'][0]
         if (choice['finish_reason'] === null) {
-          const index = getMsgIndex(messageId)
           messages.value[index].text += choice['delta']['content']
           // console.log(ev.id, ev.data);
           scrollToEnd()
         }
     },
     onclose () {
-      const index = getMsgIndex(messageId)
       console.log(messages.value[index].text)
       console.log('close')
     },
@@ -223,67 +264,14 @@ const sendOpenAi = async (url: string, messageId: string, param: {}) => {
   })
 }
 
-const sendAndReceive = async (url: string, messageId: string, param: {}) => {
-  const ctrl = new AbortController()
-  await fetchEventSource(url, {
-    method: 'POST',
-    headers: Api.getSettingWithCors(),
-    body: JSON.stringify(param),
-    signal: ctrl.signal,
-    async onopen (response: Response) {
-      console.log('open')
-      if (!response.ok || response.headers.get('content-type') !== EventStreamContentType) {
-        useMsg.error(response.statusText)
-        throw new Error('open fail')
-      }
-      const index = getMsgIndex(messageId)
-        messages.value[index].text = ''
-    },
-    onmessage (ev: EventSourceMessage) {
-      if (ev.event === 'chat') {
-        // 单独换行符
-        if (ev.data === '') {
-          ev.data = '\n'
-        }
-        const index = getMsgIndex(messageId)
-        messages.value[index].text += ev.data
-        // console.log(ev.id, ev.data);
-        scrollToEnd()
-      }
-    },
-    onclose () {
-      const index = getMsgIndex(messageId)
-      console.log(messages.value[index].text)
-      console.log('close')
-    },
-    onerror (err: any) {
-      console.log('error: ' + err)
-      throw new Error(err)
-    }
+// 复制消息
+const copyMsg = (message: string) => {
+  copyToClip(message).then(() => {
+    useMsg.success('已复制')
   })
 }
 
-const sendAndReceiveLlm = (messageId: string, param: TripQuery) => {
-  Api.tripQuery(param)
-    .then((data) => {
-      console.log(data)
-      const index = getMsgIndex(messageId)
-      messages.value[index].text = data.message
-      // console.log(ev.id, ev.data);
-      scrollToEnd()
-    }).catch((err) => {
-      console.log(err)
-    })
-}
-
-const getMsgIndex = (messageId: string): number => {
-  let index = messageIndexMap.value.get(messageId)
-  if (index === undefined) {
-    index = messages.value.length - 1
-  }
-  return index
-}
-
+// 滚动到底部
 const scrollToEnd = () => {
   const chatArea = document.querySelector('.chat-box')!
   chatArea.scrollTop = chatArea.scrollHeight + 1200
@@ -291,11 +279,11 @@ const scrollToEnd = () => {
 
 onMounted(() => {
   messages.value = props.nowChat.messageList
+  scrollToEnd()
 })
 
 onUpdated(() => {
   messages.value = props.nowChat.messageList
-  scrollToEnd()
 })
 
 </script>
@@ -331,6 +319,11 @@ onUpdated(() => {
   max-width: 800px;
   display: flex;
   align-items: flex-start;
+  &:hover {
+    .message-action {
+      opacity: 1;
+    }
+  }
 }
 
 .message-avator {
@@ -339,7 +332,14 @@ onUpdated(() => {
 }
 
 .message-text {
-  width: calc(100% - 35px);
+  width: calc(100% - 60px);
+}
+
+.message-action {
+  width: 20px;
+  margin-left: 5px;
+  cursor: pointer;
+  opacity: 0;
 }
 
 .send-area {

@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-07-27 22:35:12
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-02 23:19:04
+ * @LastEditTime: 2023-08-12 17:04:29
  * @FilePath: /ai-tool-web/src/router/routes.ts
  */
 import { RouteRecordRaw } from 'vue-router'
@@ -10,10 +10,10 @@ const mainRoutes: RouteRecordRaw[] = [
   {
     name: 'home',
     path: '/',
-    component: async () => await import('@/views/home.vue'),
+    component: async () => await import('@/views/chat/index.vue'),
     meta: {
-      title: 'Home',
-      requiresAuth: true
+      title: 'Chat',
+      requiresAuth: false
     }
   },
   {
@@ -23,15 +23,6 @@ const mainRoutes: RouteRecordRaw[] = [
     meta: {
       title: 'Chat',
       requiresAuth: false
-    }
-  },
-  {
-    name: 'about',
-    path: '/about',
-    component: async () => await import('@/views/about.vue'),
-    meta: {
-      title: 'About',
-      requiresAuth: true
     }
   }
 ]
