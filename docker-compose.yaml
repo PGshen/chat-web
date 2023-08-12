@@ -1,0 +1,12 @@
+version: '3'
+services:
+  chat-web:
+    container_name: chat-web
+    image: pipiya/chat-web:v1
+    ports:
+      - 3000:3000
+    networks:
+      - chat-network
+
+networks:
+  chat-network:
