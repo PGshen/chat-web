@@ -2,19 +2,11 @@
  * @Descripttion:
  * @version:
  * @Date: 2023-04-29 22:27:47
- * @LastEditTime: 2023-08-11 18:59:31
+ * @LastEditTime: 2023-08-13 10:45:01
  */
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import { useMessage } from 'naive-ui'
 import { useSettingStore } from '@/store/setting'
-
-const setting = useSettingStore().getSetting()
-
-axios.defaults.headers.common.apiKey = setting.apiKey
-axios.defaults.headers.common.model = setting.model
-axios.defaults.headers.common.temperature = setting.temperature
-axios.defaults.headers.common.presencePenalty = setting.presencePenalty
-axios.defaults.headers.common.Authorization = 'Bearer ' + setting.apiKey
 
 const service = axios.create()
 

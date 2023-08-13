@@ -1,8 +1,8 @@
 <!--
  * @Date: 2023-07-27 23:40:28
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-12 17:19:34
- * @FilePath: /ai-tool-web/src/layouts/index.vue
+ * @LastEditTime: 2023-08-13 11:35:39
+ * @FilePath: /chat-web/src/layouts/index.vue
 -->
 <template>
   <div style="display: flex; flex-direction: column; height: 100vh;">
@@ -15,7 +15,7 @@
         </svg>
         <span>Hello</span>
       </n-a>
-      <div v-for="item in funcList" :key="item.id" class="funcBtn">
+      <div v-for="item in funcList" :key="item.id" class="funcBtn" @click="handleNav(item.path)">
         <n-icon :size="18" :component="ChatbubblesOutline" />
         <span style="margin-left: 5px;">{{ item.title }}</span>
       </div>
@@ -28,6 +28,9 @@
 
 <script lang="ts" setup>
 import { ChatbubblesOutline } from '@vicons/ionicons5'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const funcList = [
   {
@@ -36,6 +39,11 @@ const funcList = [
     path: 'chat'
   }
 ]
+
+const handleNav = (path: string) => {
+  console.log(path);
+  router.push(path)
+}
 </script>
 
 <style scoped>

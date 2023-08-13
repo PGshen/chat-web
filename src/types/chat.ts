@@ -1,8 +1,8 @@
 /*
  * @Date: 2023-07-29 22:33:40
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-12 18:39:44
- * @FilePath: /ai-tool-web/src/types/chat.ts
+ * @LastEditTime: 2023-08-13 10:57:02
+ * @FilePath: /chat-web/src/types/chat.ts
  */
 // 单个消息
 export interface Message {
@@ -40,6 +40,8 @@ export interface OpenAiChatQuery {
   model: string
   messages: OpenAiMessage[]
   temperature: number | null
+  max_tokens: number
+  presence_penalty: number
   stream: boolean
 }
 

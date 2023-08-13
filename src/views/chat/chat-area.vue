@@ -1,8 +1,8 @@
 <!--
  * @Date: 2023-07-29 17:40:22
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-12 20:48:32
- * @FilePath: /ai-tool-web/src/views/chat/chat-area.vue
+ * @LastEditTime: 2023-08-13 11:06:02
+ * @FilePath: /chat-web/src/views/chat/chat-area.vue
 -->
 <template>
   <div class="display-area">
@@ -126,6 +126,7 @@ const sendMsg = async () => {
     return
   }
   const setting = settingStore.getSetting()
+  // 提问消息
   const quizMsg: Message = {
     index: messages.value.length,
     id: common.genRandomString(16),
@@ -137,6 +138,7 @@ const sendMsg = async () => {
   messages.value.push(quizMsg)
   inputMsg.value = ''
 
+  // 回答消息
   const replyMsg: Message = {
     index: messages.value.length,
     id: common.genRandomString(16),
@@ -149,6 +151,7 @@ const sendMsg = async () => {
   // 向下滚动
   scrollToEnd()
   
+  // 获取需要携带的历史消息
   const chatHistoryMessage = chatStore.getChatHistoryMessage(props.nowChat.id, setting.hisMsgCnt, 0)
   const hisMsg: OpenAiMessage[] = [];
   chatHistoryMessage.forEach((message) => {
@@ -162,6 +165,7 @@ const sendMsg = async () => {
     role: 'user',
     content: quizMsg.text
   })
+  // 请求openAi
   await sendOpenAi('/openai/v1/chat/completions', replyMsg.index, {
     model: setting.model,
     messages: sendMsg,
@@ -184,6 +188,8 @@ const sendMsg = async () => {
       model: setting.model,
       messages: tempMsg,
       temperature: setting.temperature,
+      max_tokens: setting.maxToken,
+      presence_penalty: setting.presencePenalty,
       stream: false
     }
     Api.openAiCompletions(params)
@@ -202,6 +208,7 @@ const sendMsg = async () => {
 const resendMsg =async (index:number) => {
   messages.value[index].isEditing = false
   const setting = settingStore.getSetting()
+  // 找到需要携带的历史消息
   const chatHistoryMessage = chatStore.getChatHistoryMessage(props.nowChat.id, setting.hisMsgCnt, index+2)
   const hisMsg: OpenAiMessage[] = [];
   chatHistoryMessage.forEach((message) => {
@@ -215,6 +222,7 @@ const resendMsg =async (index:number) => {
     role: 'user',
     content: messages.value[index].text
   })
+  // 请求openAi并更新指定位置的气泡框
   await sendOpenAi('/openai/v1/chat/completions', index+1, {
     model: setting.model,
     messages: sendMsg,
@@ -226,9 +234,12 @@ const resendMsg =async (index:number) => {
 const sendOpenAi = async (url: string, index: number, param: {}) => {
   console.log('index ' + index)
   const ctrl = new AbortController()
+  const headers = Api.getSettingWithCors()
+  const setting = settingStore.getSetting()
+  headers['Authorization'] = 'Bearer ' + setting.apiKey
   await fetchEventSource(url, {
     method: 'POST',
-    headers: Api.getSettingWithCors(),
+    headers: headers,
     body: JSON.stringify(param),
     signal: ctrl.signal,
     async onopen (response: Response) {
@@ -240,9 +251,8 @@ const sendOpenAi = async (url: string, index: number, param: {}) => {
       messages.value[index].text = ''
     },
     onmessage (ev: EventSourceMessage) {
-        // 单独换行符
+        // 完成了
         if (ev.data === '[DONE]') {
-          // ev.data = '\n'
           return
         }
         const objJson = JSON.parse(ev.data)
