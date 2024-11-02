@@ -87,7 +87,7 @@
 <script lang="ts" setup>
 import { PropType, onMounted, onUpdated, ref } from 'vue'
 import { Markdown } from '@/components'
-import { Chat, Message, OpenAiChatQuery, OpenAiMessage } from '@/types/chat'
+import { Chat, Message, OpenAiChatQuery, OpenAiChatReply, OpenAiMessage } from '@/types/chat'
 import { common } from '@/utils'
 import { useMessage } from 'naive-ui'
 import Api from '@/api'
@@ -193,12 +193,12 @@ const sendMsg = async () => {
       stream: false
     }
     Api.openAiCompletions(params)
-      .then((data) => {
+      .then((data: OpenAiChatReply) => {
         const chatTitle = data.choices[0].message.content
         console.log(chatTitle)
         chatStore.updateChatTitle(props.nowChat.id, chatTitle)
         emit('refreshChat')
-      }).catch((err) => {
+      }).catch((err: any) => {
         console.log(err)
       })
   }

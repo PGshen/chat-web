@@ -252,7 +252,7 @@ import {
   CodeSlashOutline, BusinessOutline, CreateOutline, ImagesOutline,
   PeopleOutline, HeartOutline, GameControllerOutline, DownloadOutline, HeartDislikeOutline, VolumeMediumOutline
 } from '@vicons/ionicons5'
-import type { UploadFileInfo, FormInst, MenuOption } from 'naive-ui'
+import type { UploadFileInfo, FormInst, MenuOption, FormRules } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import { DifyT, ShareReply, DifySearchReq, DifySearchReply, DifyTemplateId, EmptyReply } from '@/types/dify'
 import Api from '@/api'
@@ -316,7 +316,7 @@ const newDifyRules = ref({
     trigger: 'change',
     message: '请上传模板文件'
   }
-})
+} as FormRules)
 
 const showModal = ref(false)
 
@@ -545,18 +545,34 @@ const handleImgFinish = (
   option: {
     file: UploadFileInfo,
     event?: ProgressEvent
-  }, type: string
-) => {
-  handleFinish(option, 'image')
+  }
+): UploadFileInfo | undefined => {
+  let response = JSON.parse((event?.target as XMLHttpRequest).response)
+  if (response.code == 200) {
+    const image = response.data.imageUrl
+    option.file.name = image
+    newDify.value.images.push(image)
+    return option.file
+  } else {
+    message.warning(response.msg)
+  }
 }
 
 const handleYmlFinish = (
   option: {
     file: UploadFileInfo,
     event?: ProgressEvent
-  }, type: string
-) => {
-  handleFinish(option, 'yml')
+  }): UploadFileInfo | undefined => {
+  let response = JSON.parse((event?.target as XMLHttpRequest).response)
+  if (response.code == 200) {
+    const yml = response.data.ymlUrl
+    option.file.name = yml
+    newDify.value.yml = yml
+    console.log(newDify.value.yml)
+    return option.file
+  } else {
+    message.warning(response.msg)
+  }
 }
 
 // 上传图片
@@ -565,7 +581,7 @@ const handleFinish = (
     file: UploadFileInfo,
     event?: ProgressEvent
   }, type: string
-) => {
+): UploadFileInfo | undefined => {
   let response = JSON.parse((event?.target as XMLHttpRequest).response)
   if (response.code == 200) {
     if (type == 'image') {
@@ -585,7 +601,7 @@ const handleFinish = (
 }
 
 // 删除图片
-const handleRemove = ({ file, fileList, index }: { file: UploadFileInfo, fileList: Array<UploadFileInfo>, index: number }) => {
+const handleRemove = ({ file, fileList }: { file: UploadFileInfo, fileList: Array<UploadFileInfo> }) => {
   newDify.value.images = newDify.value.images.filter(item => item != file.name)
 }
 

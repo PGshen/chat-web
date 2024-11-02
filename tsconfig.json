@@ -5,7 +5,9 @@
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
-    "noEmitOnError": false,
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
     "paths": {
       "@/*": ["./src/*"]
     },
