@@ -145,7 +145,7 @@
 
       <n-layout-content>
         <n-layout has-sider :native-scrollbar="false" sider-placement="right">
-          <div class="content" ref="scrollRef">
+          <div id="content" class="content" ref="scrollRef">
             <n-grid v-if="difyTemplates.length > 0" x-gap="12" y-gap="12" cols="1 400:2 600:3 800:3 1000:4 1200:5">
               <n-grid-item v-for="template in difyTemplates" :key="template.id">
                 <n-card hoverable style="--n-padding-bottom: 10px; --n-padding-left: 15px; --n-padding-right: 15px">
@@ -252,7 +252,6 @@ import {
   CodeSlashOutline, BusinessOutline, CreateOutline, ImagesOutline,
   PeopleOutline, HeartOutline, GameControllerOutline, DownloadOutline, HeartDislikeOutline, VolumeMediumOutline
 } from '@vicons/ionicons5'
-import { useScroll } from '@vueuse/core'
 import type { UploadFileInfo, FormInst, MenuOption } from 'naive-ui'
 import { useMessage } from 'naive-ui'
 import { DifyT, ShareReply, DifySearchReq, DifySearchReply, DifyTemplateId, EmptyReply } from '@/types/dify'
@@ -323,7 +322,6 @@ const showModal = ref(false)
 
 // 滚动相关
 const scrollRef = ref(null)
-const { y } = useScroll(scrollRef)
 
 // 防抖
 function useDebounce<T extends (...args: any[]) => any>(
@@ -460,7 +458,6 @@ const fetchTemplate = async (pageNum: number) => {
   Api.searchDifyT(searchDify.value)
     .then((resp: IResponseType<DifySearchReply>) => {
       if (resp.code == 200 && resp.data !== undefined) {
-        console.log(resp.data)
         const data = resp.data
         if (searchDify.value.pageNum > 1) {
           if (data.list.length > 0) {
@@ -627,11 +624,9 @@ const handleShare = () => {
   })
 }
 
-const debouncedFetch = useDebounce(fetchTemplate, 1500)
+const debouncedFetch = useDebounce(fetchTemplate, 1000)
 
-
-// 监听滚动加载更多
-watch(y, (newY) => {
+const getMore = () => {
   const element = scrollRef.value
   if (!element || loading.value) return
 
@@ -641,11 +636,15 @@ watch(y, (newY) => {
       debouncedFetch(searchDify.value.pageNum)
     }
   }
-})
+}
 
 // 初始化
 onMounted(() => {
   fetchTemplate(1)
+  const content = document.getElementById('content')
+  if (content != null) {
+    content.addEventListener('scroll', getMore)
+  }
 })
 </script>
 
