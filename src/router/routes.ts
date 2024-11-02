@@ -24,6 +24,15 @@ const mainRoutes: RouteRecordRaw[] = [
       title: 'Chat',
       requiresAuth: false
     }
+  },
+  {
+    name: 'dify',
+    path: '/dify',
+    component: async () => await import('@/views/dify/index.vue'),
+    meta: {
+      title: 'Dify',
+      requiresAuth: false
+    }
   }
 ]
 
@@ -41,6 +50,14 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: async () => await import('../layouts/index.vue'),
     children: [...mainRoutes]
+  },
+  {
+    name: 'dify_yml',
+    path: '/dify_yml',
+    component: async () => await import('@/views/dify/index.vue'),
+    meta: {
+      title: 'Dify YML'
+    }
   },
   // ## not found page
   {

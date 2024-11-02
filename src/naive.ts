@@ -51,7 +51,23 @@ import {
   NModal,
   NEmpty,
   NScrollbar,
-  NAffix
+  NAffix,
+  NTag,
+  NDivider,
+  NH3,
+  NDrawer,
+  NDrawerContent,
+  NInputGroup,
+  NGrid,
+  NGridItem,
+  NStatistic,
+  NFormItem,
+  NRadio,
+  NRadioGroup,
+  NRadioButton,
+  NCheckboxGroup,
+  NCheckbox,
+  NUpload
 } from 'naive-ui'
 
 export default create({
@@ -100,6 +116,26 @@ export default create({
     NCard,
     NEmpty,
     NScrollbar,
-    NAffix
+    NAffix,
+    NTag,
+    NDivider,
+    NH3,
+    NDrawer,
+    NDrawerContent,
+    NMenu,
+    NInputGroup,
+    NCard,
+    NAvatar,
+    NIcon,
+    NGrid,
+    NGridItem,
+    NStatistic,
+    NFormItem,
+    NRadio,
+    NRadioGroup,
+    NRadioButton,
+    NCheckboxGroup,
+    NCheckbox,
+    NUpload,
   ]
 })
