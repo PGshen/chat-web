@@ -7,5 +7,6 @@
 import * as index from './module/index'
 import * as login from './module/login'
 import * as chat from './module/chat'
+import * as dify from './module/dify'
 
-export default Object.assign({}, index, login, chat)
+export default Object.assign({}, index, login, chat, dify)

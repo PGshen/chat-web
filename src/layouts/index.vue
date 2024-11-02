@@ -37,6 +37,11 @@ const funcList = [
     id: 1,
     title: '对话',
     path: 'chat'
+  },
+  {
+    id: 2,
+    title: 'Dify',
+    path: 'dify'
   }
 ]
 

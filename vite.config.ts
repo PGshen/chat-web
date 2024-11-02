@@ -45,6 +45,24 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path: string) => path.replace(/^\/ai/, '')
       },
+      '/api': {
+        // target: 'http://gpt-meeting-service:8000',
+        target: 'http://0.0.0.0:8000',
+        changeOrigin: true
+        // rewrite: (path: string) => path.replace(/^\/api/, '')
+      },
+      '/image': {
+        // target: 'http://gpt-meeting-service:8000',
+        target: 'http://0.0.0.0:8000',
+        changeOrigin: true
+        // rewrite: (path: string) => path.replace(/^\/api/, '')
+      },
+      '/yml': {
+        // target: 'http://gpt-meeting-service:8000',
+        target: 'http://0.0.0.0:8000',
+        changeOrigin: true
+        // rewrite: (path: string) => path.replace(/^\/api/, '')
+      },
       '/openai': {
         target: 'https://api.openai.com',
         changeOrigin: true,
