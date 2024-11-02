@@ -59,7 +59,7 @@ const handleNav = (path: string) => {
 }
 
 .funcBtn {
-  color: #18a058;
+  color: #155eef;
   font-size: 16px;
   margin: 0px 20px;
   display: flex;

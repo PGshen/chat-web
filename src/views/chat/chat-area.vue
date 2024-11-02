@@ -321,7 +321,7 @@ onUpdated(() => {
 }
 
 .message.self {
-  background-color: rgba(24, 160, 88, 0.16);
+  background-color: rgba(200, 215, 246, 0.502);
 }
 
 .message-box {

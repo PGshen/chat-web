@@ -92,8 +92,8 @@ const openChat = (chatId: string) => {
   margin-bottom: 10px;
   &:hover {
     cursor: pointer;
-    color: #36ad6a;
-    border: 1px solid #36ad6a;
+    color: #4464d4;
+    border: 1px solid #4464d4;
     .close-btn {
       right: 3px;
       opacity: 1;
@@ -101,8 +101,8 @@ const openChat = (chatId: string) => {
   }
 }
 .selected {
-  color: #36ad6a;
-  border: 1px solid #36ad6a;
+  color: #155eef;
+  border: 1px solid #155eef;
 }
 
 .close-btn {
