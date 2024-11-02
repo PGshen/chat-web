@@ -9,7 +9,7 @@ import { RouteRecordRaw } from 'vue-router'
 const mainRoutes: RouteRecordRaw[] = [
   {
     name: 'home',
-    path: '/',
+    path: '/app',
     component: async () => await import('@/views/chat/index.vue'),
     meta: {
       title: 'Chat',
@@ -18,7 +18,7 @@ const mainRoutes: RouteRecordRaw[] = [
   },
   {
     name: 'chat',
-    path: '/chat',
+    path: '/app/chat',
     component: async () => await import('@/views/chat/index.vue'),
     meta: {
       title: 'Chat',
@@ -27,7 +27,7 @@ const mainRoutes: RouteRecordRaw[] = [
   },
   {
     name: 'dify',
-    path: '/dify',
+    path: '/app/dify',
     component: async () => await import('@/views/dify/index.vue'),
     meta: {
       title: 'Dify',
@@ -46,18 +46,18 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    name: 'dify-app',
+    path: '/',
+    component: async () => await import('@/views/dify/index.vue'),
+    meta: {
+      title: 'Dify App'
+    }
+  },
+  {
     name: 'layout',
     path: '/',
     component: async () => await import('../layouts/index.vue'),
     children: [...mainRoutes]
-  },
-  {
-    name: 'dify_yml',
-    path: '/dify_yml',
-    component: async () => await import('@/views/dify/index.vue'),
-    meta: {
-      title: 'Dify YML'
-    }
   },
   // ## not found page
   {
