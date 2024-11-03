@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 17:40:22
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-13 11:06:02
+ * @LastEditTime: 2024-11-03 17:12:06
  * @FilePath: /chat-web/src/views/chat/chat-area.vue
 -->
 <template>
@@ -321,7 +321,7 @@ onUpdated(() => {
 }
 
 .message.self {
-  background-color: rgba(200, 215, 246, 0.502);
+  background-color: rgba(200, 215, 246, 0.23);
 }
 
 .message-box {
