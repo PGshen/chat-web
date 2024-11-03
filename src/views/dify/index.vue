@@ -76,6 +76,9 @@
                 <div>分享模板</div>
               </template>
               <div>
+                <n-alert title="提示" type="info" closable style="margin-bottom: 15px;">
+                  由于无用户登录状态，因此提交后不支持修改，尽量一次把信息填写完整🥺～
+                </n-alert>
                 <n-form ref="formRef" :model="newDify" :rules="newDifyRules" label-placement="left" label-width="auto"
                   require-mark-placement="right-hanging" size="small" :style="{
                     maxWidth: '640px',
@@ -267,6 +270,7 @@ const selectedTemplate = ref({} as DifyT)
 const difyTemplates = ref([] as DifyT[])
 const loading = ref(false)
 const isFinish = ref(false)
+const lastGetMoreTime = ref(0)  // 最后一次加载更多的时间戳，防止短时间重复请求
 const message = useMessage()
 const searchDify = ref({
   name: "",
@@ -322,37 +326,6 @@ const showModal = ref(false)
 
 // 滚动相关
 const scrollRef = ref(null)
-
-// 防抖
-function useDebounce<T extends (...args: any[]) => any>(
-  fn: T,
-  delay: number = 300
-) {
-  // 用于存储定时器 ID
-  const timeoutRef = ref<number | null>(null);
-
-  // 防抖后的函数
-  const debouncedFn = (...args: Parameters<T>): void => {
-    // 如果已经有定时器在运行，先清除它
-    if (timeoutRef.value !== null) {
-      clearTimeout(timeoutRef.value);
-    }
-
-    // 设置新的定时器
-    timeoutRef.value = setTimeout(() => {
-      fn(...args);
-    }, delay) as unknown as number;
-  };
-
-  // 组件卸载时清除可能存在的定时器
-  onUnmounted(() => {
-    if (timeoutRef.value !== null) {
-      clearTimeout(timeoutRef.value);
-    }
-  });
-
-  return debouncedFn;
-}
 
 const appTypeOptions = [
   {
@@ -640,16 +613,20 @@ const handleShare = () => {
   })
 }
 
-const debouncedFetch = useDebounce(fetchTemplate, 1000)
-
+// 加载更多
 const getMore = () => {
+  const now = Math.floor(Date.now()/1000)
+  if (now - lastGetMoreTime.value < 5) {
+    return
+  }
   const element = scrollRef.value
   if (!element || loading.value) return
 
   const { scrollHeight, scrollTop, clientHeight } = element
   if (scrollHeight - scrollTop - clientHeight < 50) {
     if (isFinish.value == false) {
-      debouncedFetch(searchDify.value.pageNum)
+      lastGetMoreTime.value = now // 更新一下最后获取的时间
+      fetchTemplate(searchDify.value.pageNum)
     }
   }
 }
@@ -657,9 +634,18 @@ const getMore = () => {
 // 初始化
 onMounted(() => {
   fetchTemplate(1)
+  // 添加滚动监听器
   const content = document.getElementById('content')
   if (content != null) {
     content.addEventListener('scroll', getMore)
+  }
+})
+
+onUnmounted(() => {
+  // 移除监听器
+  const content = document.getElementById('content')
+  if (content != null) {
+    content.removeEventListener('scroll', getMore)
   }
 })
 </script>

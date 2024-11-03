@@ -67,7 +67,8 @@ import {
   NRadioButton,
   NCheckboxGroup,
   NCheckbox,
-  NUpload
+  NUpload,
+  NAlert
 } from 'naive-ui'
 
 export default create({
@@ -137,5 +138,6 @@ export default create({
     NCheckboxGroup,
     NCheckbox,
     NUpload,
+    NAlert,
   ]
 })
