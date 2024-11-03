@@ -1,7 +1,7 @@
 <!--
  * @Date: 2023-07-29 15:46:16
  * @LastEditors: peng pgs1108pgs@126.com
- * @LastEditTime: 2023-08-13 11:29:49
+ * @LastEditTime: 2024-11-03 17:18:11
  * @FilePath: /chat-web/src/views/chat/chat-setting.vue
 -->
 <template>
@@ -63,20 +63,17 @@ const useMsg = useMessage()
 const setting = ref({} as Setting)
 const modelOptions = [
   {
-    label: 'gpt-3.5-turbo',
-    value: 'gpt-3.5-turbo'
-  },
-  {
-    label: 'gpt-3.5-turbo-16k-0613',
-    value: 'gpt-3.5-turbo-16k-0613'
-  },
-  {
     label: 'gpt-4',
     value: 'gpt-4'
-  },
-  {
-    label: 'gpt-4-32k-0613',
-    value: 'gpt-4-32k-0613'
+  },{
+    label: 'gpt-4o',
+    value: 'gpt-4o'
+  },{
+    label: 'gpt-4o-mini',
+    value: 'gpt-4o-mini'
+  },{
+    label: 'gpt-4-burbo',
+    value: 'gpt-4-turbo'
   }
 ]
 
