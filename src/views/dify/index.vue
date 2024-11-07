@@ -87,7 +87,7 @@
                     <n-input v-model:value="newDify.name" placeholder="名称" />
                   </n-form-item>
                   <n-form-item label="描述" path="description">
-                    <n-input v-model:value="newDify.description" placeholder="模板描述" type="textarea" :autosize="{
+                    <n-input v-model:value="newDify.description" placeholder="模板描述,支持markdown语法" type="textarea" :autosize="{
                       minRows: 3,
                       maxRows: 5,
                     }" />
@@ -236,7 +236,10 @@
                 </div>
               </div>
               <p>@{{ selectedTemplate.author }}</p>
-              {{ selectedTemplate.description }}
+              <Markdown
+                :text="selectedTemplate.description"
+                :as-raw-text="false"
+              />
               <n-space>
                 <n-image v-for="img in selectedTemplate.images" :width="430" :src="img" />
               </n-space>
@@ -260,6 +263,7 @@ import { useMessage } from 'naive-ui'
 import { DifyT, ShareReply, DifySearchReq, DifySearchReply, DifyTemplateId, EmptyReply } from '@/types/dify'
 import Api from '@/api'
 import { IResponseType } from '@/api/module'
+import { Markdown } from '@/components'
 
 
 // 状态管理
